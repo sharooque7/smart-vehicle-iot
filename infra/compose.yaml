@@ -1,0 +1,206 @@
+services:
+
+  # kafka_broker:
+  #   build:
+  #     context: .
+  #     dockerfile: KafkaBroker
+  #   container_name: kafka_broker
+  #   hostname: kafka_broker
+  #   volumes:
+  #     - ./server.properties:/app/server.properties  # Mount into /app
+  #   ports:
+  #     - "9092:9092"
+  #     - "9094:9094"
+  #   networks:
+  #     - kafka-net
+
+  # kafka_connect:
+  #   build:
+  #     context: .
+  #     dockerfile: KafkaConnect
+  #   container_name: kafka_connect
+  #   hostname: kafka_connect
+  #   volumes:
+  #     - ./connect-distributed.properties:/app/connect-distributed.properties  # Ensure correct path
+  #   ports:
+  #     - "8083:8083"
+  #   networks:
+  #     - kafka-net
+  #   depends_on:
+  #     - kafka_broker
+
+  mongodb-exporter:
+    image: bitnami/mongodb-exporter:0.34.0
+    container_name: mongodb-exporter
+    environment:
+      - MONGODB_URI=mongodb://petrus:petrusConnect@10.20.30.128:27017/
+    ports:
+      - "9216:9216"
+    # depends_on:
+    #   - mongo
+
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus-data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - mongodb-exporter
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+  postgres:
+    build:
+      context: ./postgresql
+    environment:
+      POSTGRES_DB: smart-vehicle-management
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - smart-vehicle
+    restart: always
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    restart: always
+    networks:
+      - smart-vehicle
+
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.4
+    container_name: keycloak
+    ports:
+      - "8181:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev
+    networks:
+      - smart-vehicle
+
+  redis:
+    image: "redis:latest"
+    container_name: "redis_server"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    environment:
+      - REDIS_USER=admin      # Set the username (supported in Redis 7.0 and above)
+      - REDIS_PASSWORD=admin@123
+    restart: always
+    networks:
+      - smart-vehicle
+
+  mongo:
+    image: mongo:latest  # Use the official MongoDB image
+    container_name: mongo  # Name of the container
+    hostname: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin  # Root username
+      MONGO_INITDB_ROOT_PASSWORD: admin123  # Root password
+    ports:
+      - "27017:27017"  # Expose port 27017 on the host
+    volumes:
+      - mongo-data:/data/db  # Volume for data persistence
+    restart: always  # Restart policy
+    networks:
+      - smart-vehicle
+
+  tdengine:
+    image: tdengine/tdengine:3.2.3.0
+    container_name: tdengine
+    hostname: tdengine-server
+    ports:
+      - "6030:6030"
+      - "6041:6041"
+      - "6043-6060:6043-6060"
+      - "6043-6060:6043-6060/udp"
+    restart: always
+    networks:
+      - smart-vehicle
+    volumes:
+      - ~/work/taos/log:/var/log/taos
+      - ~/work/taos/data:/var/lib/taos
+
+  kafka_connect:
+    build:
+      context: ./kafka
+      dockerfile: Dockerfile
+    container_name: kafka_connect
+    hostname: kafka_connect
+    volumes:
+      - ./kafka/connect-distributed.properties:/app/connect-distributed.properties  # Ensure correct path
+      - ./kafka/server.properties:/app/server.properties  # Mount into /app
+    platform: linux/amd64
+    ports:
+      - "9083:8083"
+      - "9092:9092"
+      - "9094:9094"
+    networks:
+      - smart-vehicle
+
+  spark-master:
+    build:
+      context: ./spark
+      dockerfile: SparkStandaloneCluster
+    container_name: spark-master
+    ports:
+      - "7077:7077"
+      - "8080:8080"
+    environment:
+      - SPARK_MODE=master
+    command: [ "/opt/spark/bin/spark-class", "org.apache.spark.deploy.master.Master" ]
+    networks:
+      - smart-vehicle
+
+  spark-worker:
+    build:
+      context: ./spark
+      dockerfile: SparkStandaloneCluster
+    container_name: spark-worker
+    depends_on:
+      - spark-master
+    ports:
+      - "8081:8081"
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    command: [ "/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://spark-master:7077" ]
+    networks:
+      - smart-vehicle
+
+networks:
+  smart-vehicle:
+    driver: bridge
+
+
+volumes:
+  mongo-data:  # Define a named volume
+  redis_data:
+  mongodb-data:
+  prometheus-data:
+  grafana-data:

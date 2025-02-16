@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true">
+        <processorPath useProcessorModulePath="true">
+          <entry name="$PROJECT_DIR$/src/main/java/com" />
+        </processorPath>
+      </profile>
+      <profile name="Annotation profile for smart-vehicle-management" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="/home/ubuntu/.m2/repository/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+          <entry name="/home/ubuntu/.m2/repository/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="smart-vehicle-management" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="smart-vehicle-management" options="-parameters" />
+    </option>
+  </component>
+</project>

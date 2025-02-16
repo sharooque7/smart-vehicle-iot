@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: smart-vehicle-management
+
+  profiles:
+    active: postgres  # Change this to "mongo" to switch databases
+
+---
+# PostgreSQL Configuration (Active when profile is "postgres")
+spring:
+  config:
+    activate:
+      on-profile: postgres
+  datasource:
+    url: jdbc:postgresql://localhost:5432/smart-vehicle-management
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+---
+# MongoDB Configuration (Active when profile is "mongo")
+spring:
+  config:
+    activate:
+      on-profile: mongo
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/smart-vehicle-management

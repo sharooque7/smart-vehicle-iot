@@ -1,0 +1,36 @@
+{
+  "name" : "kafka-connect-tdengine",
+  "version" : "1.1.6",
+  "title" : "Kafka Connect TDengine",
+  "description" : "TDengine is a high-performance, scalable time-series database with SQL support.\nIts code, including its cluster feature is open source under GNU AGPL v3.0.\nBesides the database engine, it provides caching, stream processing, data subscription\nand other functionalities to reduce the complexity and cost of development and operation.",
+  "owner" : {
+    "username" : "taosdata",
+    "type" : "organization",
+    "name" : "taosdata, Inc.",
+    "url" : "https://www.taosdata.com/",
+    "logo" : "assets/TDengineLogo.png"
+  },
+  "support" : {
+    "url" : "https://github.com/taosdata/kafka-connect-tdengine/issues",
+    "logo" : "assets/TDengineLogo.png",
+    "provider_name" : "taosdata, Inc."
+  },
+  "tags" : [ "TDengine", "Time Series", "Database", "taosdata", "sql" ],
+  "requirements" : [ "java8+" ],
+  "features" : {
+    "supported_encodings" : [ "any" ],
+    "single_message_transforms" : true,
+    "confluent_control_center_integration" : true,
+    "kafka_connect_api" : true
+  },
+  "logo" : "assets/TDengineLogo.png",
+  "documentation_url" : "https://github.com/taosdata/kafka-connect-tdengine",
+  "source_url" : "https://github.com/taosdata/kafka-connect-tdengine",
+  "docker_image" : { },
+  "license" : [ {
+    "name" : "AGPL-3.0 License",
+    "url" : "https://www.gnu.org/licenses/agpl-3.0.en.html"
+  } ],
+  "component_types" : [ "sink", "source" ],
+  "release_date" : "2024-11-19"
+}

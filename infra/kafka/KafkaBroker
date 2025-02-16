@@ -1,0 +1,25 @@
+# Use the official Kafka image from Docker Hub
+FROM apache/kafka:3.8.0
+
+# Set environment variables for Kafka storage and server properties
+ENV KAFKA_CONFIG_DIR=/opt/kafka/config/kraft
+# # Set environment variables
+# ENV KAFKA_KRAFT_MODE=true \
+#     KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092 \
+#     KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka_broker:9092 \
+#     KAFKA_LOG_DIRS=/var/lib/kafka/data \
+#     KAFKA_CLUSTER_ID=5L6g3nShT-eMCtK--X86sw
+
+# Create necessary directories
+RUN mkdir -p /var/lib/kafka/data
+RUN /opt/kafka/bin/kafka-storage.sh format -t tdTf08JbSpGbG6b4pLo_Lw -c $KAFKA_CONFIG_DIR/server.properties
+
+# WORKDIR /app
+COPY server.properties .
+
+
+# Expose the necessary port
+EXPOSE 9092
+EXPOSE 9094
+# Start Kafka using the kraft script
+CMD ["sh", "-c", "/opt/kafka/bin/kafka-server-start.sh /app/server.properties"]
