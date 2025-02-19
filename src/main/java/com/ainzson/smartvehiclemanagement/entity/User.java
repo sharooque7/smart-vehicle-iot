@@ -1,9 +1,12 @@
 package com.ainzson.smartvehiclemanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -19,7 +22,7 @@ public class User {
     private Long userId;
 
     @Column(unique = true, nullable = false, length = 50)
-    private String userName;
+    private String username;
 
     @Column(unique = true, nullable = false, length = 100)
     private String email;
@@ -35,5 +38,11 @@ public class User {
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+
+    private List<Vehicle> vehicles = new ArrayList<>();
+
 }
 

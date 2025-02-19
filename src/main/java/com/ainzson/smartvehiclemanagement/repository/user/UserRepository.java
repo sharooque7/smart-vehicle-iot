@@ -14,5 +14,10 @@ public interface UserRepository {
 
         boolean existsByUsername(String username); // Check if username exists
 
+        boolean existsById(Long userId); // Check if username exists
+
+
         boolean existsByEmail(String email); // Check if email exists
+
+        void deleteById(Long id);
     }

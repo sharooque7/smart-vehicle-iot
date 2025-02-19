@@ -1,6 +1,7 @@
 package com.ainzson.smartvehiclemanagement.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -25,6 +26,7 @@ public class Sensor {
     @ManyToOne
     @JoinColumn(name = "vehicle_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE) // Hibernate-specific annotation
+    @JsonIgnore
     private Vehicle vehicle;
 
 
@@ -42,4 +44,5 @@ public class Sensor {
 
     @Column(nullable = false,length = 20)
     private String tag;
+
 }

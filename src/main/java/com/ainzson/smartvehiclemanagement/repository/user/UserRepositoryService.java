@@ -31,4 +31,11 @@ public class UserRepositoryService {
     public boolean isEmailRegistered(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    public void deleteById(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new RuntimeException("User not found with ID: " + userId);
+        }
+        userRepository.deleteById(userId);
+    }
 }
