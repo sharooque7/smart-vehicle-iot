@@ -26,7 +26,7 @@ public class Sensor {
     @ManyToOne
     @JoinColumn(name = "vehicle_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE) // Hibernate-specific annotation
-    @JsonIgnore
+//    @JsonIgnore
     private Vehicle vehicle;
 
 

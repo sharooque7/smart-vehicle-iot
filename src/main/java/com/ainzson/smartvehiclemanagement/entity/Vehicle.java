@@ -1,5 +1,6 @@
 package com.ainzson.smartvehiclemanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,6 +41,7 @@ public class Vehicle {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
     private List<Sensor> sensors;
 
 }
