@@ -193,6 +193,23 @@ services:
     networks:
       - smart-vehicle
 
+  emqx:
+    image: emqx/emqx:5.3.1
+    container_name: emqx
+    hostname: emqx
+    restart: always
+    ports:
+      - "1884:1883"
+      - "8083:8083"
+      - "8084:8084"
+      - "8884:8883"
+      - "18083:18083"
+    networks:
+      - smart-vehicle
+    volumes:
+      - emqx_data:/opt/emqx/data  # Store persistent data
+      - emqx_log:/opt/emqx/log    # Store
+
 networks:
   smart-vehicle:
     driver: bridge
@@ -204,3 +221,5 @@ volumes:
   mongodb-data:
   prometheus-data:
   grafana-data:
+  emqx_data:
+  emqx_log:

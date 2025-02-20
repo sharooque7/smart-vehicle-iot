@@ -3,7 +3,9 @@ package com.ainzson.smartvehiclemanagement.controller;
 
 import com.ainzson.smartvehiclemanagement.entity.Sensor;
 import com.ainzson.smartvehiclemanagement.services.SensorService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,10 +22,11 @@ public class SensorController {
     }
 
     // 🔹 Register a new sensor
-    @PostMapping
-    public ResponseEntity<Sensor> registerSensor(@RequestBody Sensor sensor) {
-        Sensor savedSensor = sensorService.registerSensor(sensor);
-        return ResponseEntity.ok(savedSensor);
+    @PostMapping("/{vehicleId}")
+    public ResponseEntity<Sensor> registerSensor(@PathVariable Long vehicleId, @RequestBody Sensor sensor) {
+        Sensor savedSensor = sensorService.registerSensor(vehicleId, sensor);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedSensor);
+
     }
 
     // 🔹 Get all sensors

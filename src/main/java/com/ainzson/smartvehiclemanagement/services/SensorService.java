@@ -2,7 +2,9 @@ package com.ainzson.smartvehiclemanagement.services;
 
 
 import com.ainzson.smartvehiclemanagement.entity.Sensor;
+import com.ainzson.smartvehiclemanagement.entity.Vehicle;
 import com.ainzson.smartvehiclemanagement.repository.sensor.SensorRepositoryService;
+import com.ainzson.smartvehiclemanagement.repository.vehicle.VehicleRepositoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +17,16 @@ import java.util.Optional;
 public class SensorService {
 
     private final SensorRepositoryService sensorRepositoryService;
+    private final VehicleRepositoryService vehicleRepositoryService;
 
     @Transactional
-    public Sensor registerSensor(Sensor sensor) {
+    public Sensor registerSensor(Long vehicleId, Sensor sensor) {
+
+
+        Vehicle vehicle = vehicleRepositoryService.findByVehicleId(vehicleId)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+        sensor.setVehicle(vehicle);
+        sensor.setStatus("active"); // Default status on onboarding
         return sensorRepositoryService.save(sensor);
     }
 

@@ -40,5 +40,20 @@ public class UserController {
         Optional<User> user = userService.getUserByEmail(email);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
+        User updatedUser = userService.updateUser(user.getUserId(), user);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.ok("User deleted successfully.");
+    }
+
 }
 

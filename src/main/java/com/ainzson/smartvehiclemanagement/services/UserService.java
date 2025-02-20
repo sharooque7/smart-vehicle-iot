@@ -30,6 +30,22 @@ public class UserService {
         return userRepositoryService.saveUser(user);
     }
 
+    public User updateUser(Long userId, User updatedUser) {
+        return userRepositoryService.getUserById(userId).map(user -> {
+            user.setFullName(updatedUser.getFullName());
+            user.setPhoneNumber(updatedUser.getPhoneNumber());
+            user.setEmail(updatedUser.getEmail());
+            if (updatedUser.getPasswordHash() != null) {
+                user.setPasswordHash(passwordEncoder.encode(updatedUser.getPasswordHash()));
+            }
+            return userRepositoryService.saveUser(user);
+        }).orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+    }
+
+    public void deleteUser(Long userId) {
+        userRepositoryService.deleteById(userId);
+    }
+
     // Get User by ID
     public Optional<User> getUserById(Long userId) {
         return userRepositoryService.getUserById(userId);
