@@ -38,4 +38,3 @@ CREATE TABLE vehicle_travel_logs (
     average_speed FLOAT CHECK (average_speed >= 0),
     status VARCHAR(20) DEFAULT 'in_progress' -- in_progress, completed, canceled
 );
-~
